@@ -36,7 +36,7 @@ public class CurtainPlugin extends PluginWebFilterAbstract implements SystemConf
 
     @Override
     public String getVersion() {
-        return "8.2.0";
+        return "8.2.1";
     }
     
     @Override
@@ -163,7 +163,7 @@ public class CurtainPlugin extends PluginWebFilterAbstract implements SystemConf
         JSONArray apps = new JSONArray();
 
         try {
-            ResultSet rs = ds.getConnection().createStatement().executeQuery("select appId as value, name as label from app_app");
+            ResultSet rs = ds.getConnection().createStatement().executeQuery("select appId as value, name as label, appVersion, published from app_app");
             ResultSetMetaData rsmd = rs.getMetaData();
             int columnCount = rsmd.getColumnCount();
 
@@ -172,7 +172,7 @@ public class CurtainPlugin extends PluginWebFilterAbstract implements SystemConf
 
                 for (int i = 1; i <= columnCount; i++) {
                     String appId = rsmd.getColumnLabel(i);
-                    Object appName = rs.getObject(i);
+                    Object appName = rs.getObject(i) + " (v" + rs.getString("appVersion") + ") - " + getReadableStatus(rs.getString("published"));
 
                     app.put(appId, appName);
                 }
@@ -184,5 +184,15 @@ public class CurtainPlugin extends PluginWebFilterAbstract implements SystemConf
         }
 
         return apps;
+    }
+
+    private String getReadableStatus(String value) {
+        if ("1".equalsIgnoreCase(value)) {
+            return "Published";
+        } else if ("0".equalsIgnoreCase(value)) {
+            return "Unpublished";
+        } else {
+            return "UNKNOWN";
+        }
     }
 }
