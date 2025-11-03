@@ -1,0 +1,28 @@
+[
+    {
+        "title" : "Curtain Settings",
+        "properties" : [{
+                "name": "enabled",
+                "label": "Enable Curtain",
+                "type": "checkbox",
+                "value": "false",
+                "options": [
+                    {
+                        "value": "true",
+                        "label": ""
+                    }
+                ]
+            }, {
+                "name" : "apps",
+                "label" : "Curtained Apps",
+                "type" : "grid",
+                "columns"   : [{
+                    "key"   : "appId",
+                    "label" : "",
+                    "type" : "elementselect",
+                    "options_ajax" : "[CONTEXT_PATH]/web/json/plugin/org.joget.marketplace.CurtainPlugin/service?ask=apps"
+                }]
+        }]
+    }
+]
+
