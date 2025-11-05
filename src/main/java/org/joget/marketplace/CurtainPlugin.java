@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.io.IOException;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import javax.sql.DataSource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletRequest;
@@ -164,19 +163,11 @@ public class CurtainPlugin extends PluginWebFilterAbstract implements SystemConf
 
         try {
             ResultSet rs = ds.getConnection().createStatement().executeQuery("select appId as value, name as label, appVersion, published from app_app");
-            ResultSetMetaData rsmd = rs.getMetaData();
-            int columnCount = rsmd.getColumnCount();
 
             while (rs.next()) {
                 JSONObject app = new JSONObject();
-
-                for (int i = 1; i <= columnCount; i++) {
-                    String appId = rsmd.getColumnLabel(i);
-                    Object appName = rs.getObject(i) + " (v" + rs.getString("appVersion") + ") - " + getReadableStatus(rs.getString("published"));
-
-                    app.put(appId, appName);
-                }
-
+                app.put("value", rs.getString("appId"));
+                app.put("label", rs.getString("name") + " (v" + rs.getString("appVersion") + ") - " + getReadableStatus(rs.getString("published")));
                 apps.put(app);
             }
         } catch (Exception e) {
